@@ -9,4 +9,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+  // redirect for fastify
+  // @Get()
+  // index(@Res() res) {
+  //   res.status(302).redirect('/login');
+  // }
 }
