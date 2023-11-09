@@ -1,9 +1,17 @@
+# Simple REST Api with Role-based authorization NestJS
+
+> Role-based access control (RBAC) is a policy-neutral access-control mechanism defined around roles and privileges. In this section, we'll demonstrate how to implement a very basic RBAC mechanism using Nest guards.
+
+The project is a boilerplate or a simple demonstration of CRUD operations based on authentication cia `/auth/login` credentials. After we get the token, are able to reuse among some operations like `/auth/profile` and CRUD with `/posts` in the project.
+
+The example is called plane/simple, because it doesn't implement the efficient backend, rather than these simple auth tasks. Meaning: no real users, database connections or proper `posts` handling.
+
+#### It is a PoC for CRUD opearations using authorization technics on NestJS using their docs.
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
 
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
     <p align="center">
@@ -29,7 +37,7 @@
 ## Installation
 
 ```bash
-$ npm install
+npm install
 ```
 
 ## Running the app
@@ -44,6 +52,7 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+The app runs on port `3001` of `localhost`.
 
 ## Test
 
@@ -58,16 +67,28 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
+## Usage
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Authentication sample
 
-## Stay in touch
+Choose among other users who are statically prewritten in `UsersService` class. 
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+curl --location 'http://127.0.0.1:3001/auth/login' \
+--header 'Content-Type: application/json' \
+--data '{
+    "username":"john",
+    "password":"changeme"
+}'
+```
 
-## License
+After succesfully retreaving `access_token`, we can reuse it as a Bearer token at any request.
 
-Nest is [MIT licensed](LICENSE).
+### Listing posts
+
+We need to pass a Bearer token in the header of the request, that we retreated after successful auth, for all opeartions on `/posts` except `GET`, where we only retreave posts that doesn't need authorization and are publicly accessable.
+
+```bash
+curl --location --request POST 'http://127.0.0.1:3001/users' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoiam9obiIsInJvbGVzIjpbInZlbmRvciIsInVzZXIiXSwiaWF0IjoxNjk5NTYxNzM5LCJleHAiOjE2OTk2MDQ5Mzl9.iV-eF1BzxwHRLMHOt3jMLnm4-WWw4WrtUmRFAG-C-Zc'
+```

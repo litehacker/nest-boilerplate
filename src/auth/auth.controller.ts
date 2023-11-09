@@ -6,12 +6,10 @@ import {
   HttpStatus,
   Post,
   Request,
-  UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
-import { Role } from 'enums/role.enum';
-import { Roles } from './roles/roles.decorator';
+import { Role } from 'src/users/entities/role.enum';
+import { Public, Roles } from '../users/roles/roles.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -19,13 +17,13 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
+  @Public()
   signIn(@Body() signInDto: Record<string, any>) {
     return this.authService.signIn(signInDto.username, signInDto.password);
   }
 
-  @UseGuards(AuthGuard)
-  @Roles(Role.User)
   @Get('profile')
+  @Roles(Role.Admin, Role.Vendor, Role.User)
   getProfile(@Request() req) {
     return req.user;
   }
